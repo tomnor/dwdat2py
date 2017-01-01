@@ -73,7 +73,7 @@ _init.restype = ct.c_int
 def init():
     """Must be called prior to making any other calls.
 
-    oWraps:
+    Wraps:
         DWStatus DWInit();"""
     return _init()
 
@@ -258,24 +258,3 @@ def channel_reduced(channel, reduction):
 
     cnt = get_reduced_values_count(index)[0]
     return [rec[reduction] for rec in get_reduced_values(index, 0, cnt)]
-
-
-################## debug code: ######################
-
-# print 'trying my functions..'
-# stat = init()
-# print 'stat of init:', stat, dh.DWStatus(stat).name
-# print 'version:', get_version()
-# fi = open_data_file(u'/home/tomas/broms/setup_0001.dxd')
-# print fi
-# print 'number of channels:', get_channel_list_count()
-# ch_list = get_channel_list()
-# for ch in ch_list:
-#     print ch
-#     count_res = get_reduced_values_count(ch.index)
-#     print count_res
-#     print get_reduced_values(ch.index, 0, count_res[0])
-# stat = close_data_file()
-# print 'stat of close_data_file', stat, dh.DWStatus(stat).name
-# stat = de_init()
-# print 'stat of de_init', stat, dh.DWStatus(stat).name

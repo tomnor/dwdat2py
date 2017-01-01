@@ -33,8 +33,8 @@ Using pip
 Installing from source
 ......................
 
-Download the source from <the github repo>, cd into the dwdat2py src directory
-(the directory with the ``setup.py`` file) and say
+Download the source from https://github.com/tomnor/dwdat2py, cd into the
+dwdat2py src directory (the directory with the ``setup.py`` file) and say
 
 ::
 
@@ -58,7 +58,7 @@ version should work as well, else please report it.
 Unpack that archive and put the library files for your system into a directory
 of choice, probably on the machine you work on. There is only one file needed,
 for example the ``DWDataReaderLib64.so`` or the ``DWDataReaderLib64.dll``, but
-it's ok to just dump them all into a directory and let dwdat2py select the right
+it's OK to just dump them all into a directory and let dwdat2py select the right
 one at import time.
 
 Finally, set an environment variable ``DEWELIBDIR`` to the directory where the
@@ -96,7 +96,7 @@ The highest level function for now in this package is this:
 
 .. code:: python
 
-  
+
     def channel_reduced(channel, reduction):
         """Return a list of data for channel reduced to reduction.
 
@@ -128,7 +128,7 @@ Contribute
 ----------
 
 Please report bugs and send suggestions or patches to the author. Or make an
-issue or pull request on the repo home at `Github <http://github.com/tomnor/dwdat>`_
+issue or pull request on the repo home at `Github <http://github.com/tomnor/dwdat2py>`_
 
 .. [1] dwdatareader solves the same problem but with higher level of abstraction
        to the library functions.
