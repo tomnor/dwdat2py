@@ -58,7 +58,7 @@ version should work as well, else please report it.
 Unpack that archive and put the library files for your system into a directory
 of choice, probably on the machine you work on. There is only one file needed,
 for example the ``DWDataReaderLib64.so`` or the ``DWDataReaderLib64.dll``, but
-it's OK to just dump them all into a directory and let dwdat2py select the right
+it's OK to just dump them all into the directory and let dwdat2py select the right
 one at import time.
 
 Finally, set an environment variable ``DEWELIBDIR`` to the directory where the

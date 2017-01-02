@@ -31,7 +31,7 @@ http://www.dewesoft.com/developers (need an account) and set an
 environment variable `DEWELIBDIR` to the directory in which the binary
 library file(s) are stored.
 
-This module should be used with some care. Here is a typical workflow:
+This module should be used with some care. Here is a typical work flow:
 
 1.    `init()`
 2.    `open_data_file('dat1')`
