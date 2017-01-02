@@ -8,7 +8,19 @@ here = os.path.dirname(__file__)
 packdir = os.path.abspath(os.path.join(here, os.pardir))
 sys.path.insert(0, packdir)
 
+try:
+    from dwdat2py import wrappers as dw
+except EnvironmentError as e:
+    print e.message
+    print 'tests not possible without the lib, please see README.'
+    sys.exit(1)
+
 DATAFILE = os.path.join(here, 'Example_Drive01.d7d')
+
+if not os.path.exists(DATAFILE):
+    with gzip.open(DATAFILE + '.gz') as fi, open(DATAFILE, 'wb') as fo:
+        fo.write(fi.read())
+
 
 class AttrHolder:
     pass
@@ -19,17 +31,7 @@ AH = AttrHolder()
 class TestWrappers(unittest.TestCase):
     """Test all the functions in wrappers module."""
 
-    def setUp(self):
-        """Import the wrappers module and unpack test data."""
-        global dw
-        from dwdat2py import wrappers as dw
-
-        if not os.path.exists(DATAFILE):
-            with gzip.open(DATAFILE + '.gz') as fi, open(DATAFILE, 'wb') as fo:
-                fo.write(fi.read())
-
-    # naming of tests is to ensure execution order (name string sort)
-
+    # naming of tests is to ensure execution order
     def test01(self):
         """Test that init() return 0"""
 
