@@ -1,6 +1,5 @@
 .. -*- coding: utf-8 -*-
 
-
 **Work in progress, the setup script is not ready and tested**
 
 **Package not on pypi yet**
@@ -33,8 +32,8 @@ Using pip
 Installing from source
 ......................
 
-Download the source from https://github.com/tomnor/dwdat2py, cd into the
-dwdat2py src directory (the directory with the ``setup.py`` file) and say
+Clone the repo with ``git clone https://github.com/tomnor/dwdat2py.git``, cd
+into dwdat2py directory (the directory with the ``setup.py`` file) and say
 
 ::
 
