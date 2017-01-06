@@ -7,8 +7,8 @@ import sys, os
 import unittest
 import gzip
 
-# Testing the local package code but imports from local code need to be
-# available.
+# Testing the local package code but dependencies need to be available on the
+# system.
 here = os.path.dirname(__file__)
 packdir = os.path.abspath(os.path.join(here, os.pardir))
 sys.path.insert(0, packdir)
@@ -90,10 +90,46 @@ class TestWrappers(unittest.TestCase):
 
         self.assertTrue(all([cnt == (192, 0.5) for cnt in countlist]))
 
+    def test09(self):
+        """Each item type in the Channel tuples in the list is as expected."""
+
+        truelist = []
+        for channel in AH.channels:
+            truelist += [type(channel.index) == int,
+                         type(channel.name) in (str, unicode),
+                         type(channel.unit) in (str, unicode),
+                         type(channel.description) in (str, unicode),
+                         type(channel.color) in (int, long),
+                         type(channel.array_size) == int,
+                         type(channel.data_type) == int]
+
+        self.assertTrue(all(truelist))
+
+    def test10(self):
+        """get_reduced_values and channel_reduced results in the same data."""
+
+        for channel in AH.channels:
+            count, _ = dw.get_reduced_values_count(channel.index)
+            records = dw.get_reduced_values(channel.index, 0, count)
+            for reduction in range(5):
+                self.assertEqual(dw.channel_reduced(channel.index, reduction),
+                                     [record[reduction] for record in records])
+
+    def test11(self):
+        """The multiplexed argument to channel_reduced (int or str) works."""
+
+        for channel in AH.channels:
+            self.assertEqual(dw.channel_reduced(channel.index, 1),
+                             dw.channel_reduced(channel.name, 1))
+
+
     def test20(self):
         """Test that close file return 0."""
         res = dw.close_data_file()
         self.assertEqual(res, 0)
+
+    def shortDescription(self):
+        return None
 
 
 
