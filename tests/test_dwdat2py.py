@@ -1,9 +1,14 @@
 #! /usr/bin/env python
 
+"""Test the local dwdat2py package.
+"""
+
 import sys, os
 import unittest
 import gzip
 
+# Testing the local package code but imports from local code need to be
+# available.
 here = os.path.dirname(__file__)
 packdir = os.path.abspath(os.path.join(here, os.pardir))
 sys.path.insert(0, packdir)
