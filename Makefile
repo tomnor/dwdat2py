@@ -18,6 +18,7 @@ install-deps:
 uninstall:
 	pip uninstall dwdat2py
 
+# uninstall dependencies
 .PHONY: uninstall-deps
 uninstall-deps:
 	pip uninstall -r requirements.txt
@@ -25,7 +26,7 @@ uninstall-deps:
 README.html: README.rst
 	rst2html README.rst README.html
 
-browse_readme : README.html
+browse_readme: README.html
 	xdg-open README.html
 
 .PHONY: clean
