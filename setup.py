@@ -26,9 +26,6 @@ setup(name='dwdat2py',
       download_url='https://github.com/tomnor/dwdat/tarball/master',
       license='MIT',
       packages=['dwdat2py'],
-      requires=[
-          'enum34',
-      ],
       classifiers=[
           "Intended Audience :: Science/Research",
           "Topic :: Scientific/Engineering :: Information Analysis",

@@ -1,12 +1,5 @@
-# ABOUT dwdatareader-doc.txt
-# ==========================
-#
-# This file was converted to a textfile from DEWESoft's document
-# DWDataReaderv.doc using antiword plus some manual tweaks. It is kept in the
-# repo so that the wrappers can be compared with the library function
-# documentation.
 
-DWDataReader - Dynamic Link Library (v4.2.0.0)
+DWDataReader - Dynamic Link Library (v4.2.0.11)
 
 Data structure:
 
@@ -18,9 +11,12 @@ enum DWStatus    // status returned from library function calls
       DWSTAT_ERROR_FILE_ALREADY_IN_USE = 3,      // file already in use
       DWSTAT_ERROR_FILE_CORRUPT = 4,             // file corrupted
       DWSTAT_ERROR_NO_MEMORY_ALLOC = 5           // memory not allocated
-      DWSTAT_ERROR_CREATE_DEST_FILE = 6,         // error creating dest. file (only for d7z files)
-      DWSTAT_ERROR_EXTRACTING_FILE = 7,               // error extracting data (only for d7z files)
-      DWSTAT_ERROR_CANNOT_OPEN_EXTRACTED_FILE = 8   // error opening extracted file (only for d7z files)
+      DWSTAT_ERROR_CREATE_DEST_FILE = 6,         // error creating dest.
+file (only for d7z files)
+      DWSTAT_ERROR_EXTRACTING_FILE = 7,               // error extracting
+data (only for d7z files)
+      DWSTAT_ERROR_CANNOT_OPEN_EXTRACTED_FILE = 8   // error opening
+extracted file (only for d7z files)
 };
 
 enum DWChannelProps    // used for DWGetChannelProps() calls
@@ -35,8 +31,12 @@ enum DWChannelProps    // used for DWGetChannelProps() calls
       DW_CH_XML = 7,              // get channel XML
       DW_CH_XML_LEN = 8,          // get length of channel XML
       DW_CH_XMLPROPS = 9,         // get channel XML properties
-      DW_CH_XMLPROPS_LEN = 10     // get length of channel XML
+      DW_CH_XMLPROPS_LEN = 10,         // get length of channel XML
 properties
+      DW_CH_CUSTOMPROPS = 11,           // get channel XML custom properties
+      DW_CH_CUSTOMPROPS_COUNT = 12      // get length of channel XML custom
+properties
+
 };
 
 enum DWChannelType     // channel type
@@ -49,7 +49,8 @@ enum DWChannelType     // channel type
 struct DWFileInfo           // structure used for data file
 {
       double sample_rate;     // the sampling rate
-      double start_store_time;      // absolute time of the start of storing (days)
+      double start_store_time;      // absolute time of the start of
+storing (days)
       double duration;        // duration of data file (seconds)
 };
 
@@ -60,12 +61,14 @@ struct DWChannel       // structure used for Dewesoft channel
       char unit[20];          // the unit of a channel
       char description[200];        // the description of a channel
       unsigned int color;     // specifies the color of a channel
-      int array_size;         // length of the array channel (normal array_size = 1)
-      int data_type;          // channel data type – please see the data types below
+      int array_size;         // length of the array channel (normal
+array_size = 1)
+      int data_type;          // channel data type – please see the data
+types below
 };
 
 // data types in buffer
-#define MaxDataTypes 14
+#define MaxDataTypes 15
 #define dtByte 0
 #define dtShortInt 1
 #define dtSmallInt 2
@@ -80,6 +83,7 @@ struct DWChannel       // structure used for Dewesoft channel
 #define dtText 11
 #define dtBinary 12
 #define dtCANPortData 13
+#define dtCANFDPortData 14
 
 
 struct DWEvent         // structure used for Dewesoft events
@@ -94,15 +98,15 @@ struct DWReducedValue  // reduced value
       double time_stamp;      // relative time in seconds
       double ave;             // average value
       double min;             // min value
-      double max;             // max value
+      double max;        // max value
       double rms;             // rms value
 };
 
 struct DWArrayInfo     // array info
 {
       int index;         // unique axis identifier
-      char name[100];    // axis name
-      char unit[20];     // axis unit
+      char name[100];         // axis name
+      char unit[20];          // axis unit
       int size;          // length of the axis size
 };
 
@@ -112,10 +116,41 @@ struct DWCANPortData   // CAN port data
       char data[8];           // CAN data
 };
 
+struct DWCANFDPortData // CAN port data
+{
+      Unsigned long arb_id;   // arbitration id
+      Unsigned char extended;
+      Unsigned char reserverd1;
+      Unsigned char reserverd2;
+      Unsigned char dataSize;
+      Unsigned char data[64];    // CAN FD data
+};
+
 struct DWComplex       // complex value
 {
       double re;         // real part
       double im;         // imaginary part
+};
+
+enum DWCustomPropValueType
+{
+      DW_CUSTOM_PROP_VAL_TYPE_EMPTY = 0,
+      DW_CUSTOM_PROP_VAL_TYPE_INT64 = 1,
+      DW_CUSTOM_PROP_VAL_TYPE_DOUBLE = 2,
+      DW_CUSTOM_PROP_VAL_TYPE_STRING = 3,
+};
+
+struct DWCustomProp    // structure used for custom properties
+{
+      char key[100];                     // custom property name
+      enum DWCustomPropValueType valueType;    // type of property
+      union
+      {
+           __int64 int64Val;
+           double doubleVal;
+           char strVal[100];
+
+      } value;                            // property value
 };
 
 Functions:
@@ -151,7 +186,7 @@ Description: This function opens a data file specified by file_name.
 
 DWCloseDataFile
 
-dwstatus DWCloseDataFile();
+DWStatus DWCloseDataFile();
 Return value: See above enumerator
 Description: This should be called when shutting down the application or
 when not more access to a data file is needed.
@@ -198,6 +233,7 @@ channel XML the DWGetChannelProps() must be first called with DW_CH_XML_LEN
 selector in order to retrieve the actual XML length and use it to properly
 allocate buffer. Afterwards, DWGetChannelProps() is called with DW_CH_XML
 selector to retrieve the actual XML data.
+
 
 DWGetScaledSamplesCount
 
@@ -247,7 +283,7 @@ channel.
 DWGetBinarySamples
 
 DWStatus DWGetBinarySamples(int ch_index, __int64 sampleIndex, char* data,
-                            double* time_stamp, int* datalen);
+double* time_stamp, int* datalen);
 Parameters:
       ch_index – ch. identifier
       sampleIndex – index of sample to retrieve; the first sample has
@@ -265,7 +301,7 @@ Description: This function returns binary data of the retrieved sample.
 DWGetBinarySamplesEx
 
 DWStatus DWGetBinarySamplesEx(int ch_index, __int64 sampleIndex, int count,
-                              char* data, double* time_stamp, int* datalen);
+char* data, double* time_stamp, int* datalen);
 Parameters:
       ch_index – ch. identifier
       sampleIndex – index of sample to retrieve; the first sample has
@@ -283,7 +319,7 @@ Description: This function returns binary data of the retrieved sample.
 DWGetReducedValuesCount
 
 DWStatus DWGetReducedValuesCount(int ch_index, int* count, double*
-                                 block_size);
+block_size);
 Parameters:
       ch_index – ch. identifier
       count –a number of reduced samples
@@ -295,7 +331,7 @@ channel.
 DWGetReducedValues
 
 DWStatus DWGetReducedValues(int ch_index, int position, int count, struct
-                            DWReducedValue* data);
+DWReducedValue* data);
 Parameters:
       ch_index – ch. identifier
       position – offset position; the first samlpe has position 0
@@ -324,7 +360,7 @@ Description: This function returns the header entries.
 DWGetHeaderEntryText
 
 DWStatus DWGetHeaderEntryText(int ch_index, char* text_value, int
-                              text_value_size);
+text_value_size);
 Parameters:
       ch_index – ch. identifier
       text_value – entry value
@@ -350,7 +386,7 @@ DWExportHeader
 
 DWStatus DWExportHeader(char* file_name);
 Parameters:
-      file_name – DeweSoft (d7d) data file name
+      file_name – output file name
 Return value: See above enumerator
 Description: This function exports a header (*.xml) to the disk.
 
@@ -376,7 +412,7 @@ Description: : This function returns the list of array info.
 DWGetArrayIndexValue
 
 DWStatus DWGetArrayIndexValue(int ch_index, int array_info_index, int
-                              array_value_index, char* value, int value_size);
+array_value_index, char* value, int value_size);
 Parameters:
       ch_index – ch. identifier
       array_info_index – axis identifier

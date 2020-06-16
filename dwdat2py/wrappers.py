@@ -3,7 +3,7 @@
 
 # The MIT License (MIT)
 #
-# Copyright (c) 2017 Tomas Nordin
+# Copyright (c) 2017, 2020 Tomas Nordin
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -46,10 +46,12 @@ This module should be used with some care. Here is a typical work flow:
 """
 
 import ctypes as ct
-import os, platform
+import os
+import platform
 from collections import namedtuple
+import locale
 
-from . import dwheader as dh
+from . import DWDataReaderHeader as dh
 
 libdir = os.getenv('DEWELIBDIR')
 if libdir is None:
@@ -107,6 +109,10 @@ def open_data_file(filename):
 
     """
     info = dh.DWFileInfo()
+    try:
+        filename = filename.encode()
+    except AttributeError:
+        pass                    # bytes already we hope
     stat = _open_data_file(filename, ct.byref(info))
     if stat != 0:
         raise RuntimeError(dh.DWStatus(stat).name)
@@ -225,13 +231,13 @@ def get_reduced_values(ch_index, position, count):
 
 # ------------------------------------------------------------------------------
 
-def channel_reduced(channel, reduction):
+def channel_reduced(channel, reduction, encoding=None):
     """Return a flat list of data for channel reduced to reduction.
 
     Parameters
     ----------
 
-    channel : int or string
+    channel : int or str
         Either the channel index or the channel name.
 
     reduction : int
@@ -242,6 +248,10 @@ def channel_reduced(channel, reduction):
         max = 3
         rms = 4
 
+    encoding : str
+        The encoding to use to encode `channel` to a byte string in case
+        `channel` is str.
+
     Wraps:
         Nothing explicit. This is a support function to simplify getting
         reduced data from a channel.
@@ -249,12 +259,19 @@ def channel_reduced(channel, reduction):
     """
 
     index = None
+
+    try:
+        channel = channel.encode(encoding=encoding or
+                                 locale.getpreferredencoding())
+    except AttributeError:
+        pass
+
     for ch in get_channel_list():
         if ch.name == channel or ch.index == channel:
             index = ch.index
             break
     else:                       # no break
-        raise ValueError(channel)
+        raise ValueError(channel, 'not found in data')
 
     cnt = get_reduced_values_count(index)[0]
     return [rec[reduction] for rec in get_reduced_values(index, 0, cnt)]

@@ -1,27 +1,18 @@
 .PHONY: test
 test:
-	python tests/test_dwdat2py.py -v
+	python3 tests/test_wrappers.py -v
 
-.PHONY: sdist
-sdist:
-	python setup.py sdist --formats=gztar,zip
+.PHONY: dist
+dist:
+	python setup.py sdist bdist_wheel
 
 .PHONY: install
 install:
 	pip install .
 
-.PHONY: install-deps
-install-deps:
-	pip install -r requirements.txt
-
 .PHONY: uninstall
 uninstall:
 	pip uninstall dwdat2py
-
-# uninstall dependencies
-.PHONY: uninstall-deps
-uninstall-deps:
-	pip uninstall -r requirements.txt
 
 README.html: README.rst
 	rst2html README.rst README.html
