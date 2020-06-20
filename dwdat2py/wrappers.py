@@ -39,6 +39,7 @@ import os
 import platform
 from collections import namedtuple
 import locale
+from operator import attrgetter
 
 from . import DWDataReaderHeader as dh
 from . import libdirfind, DEWELIBDIR
@@ -87,21 +88,34 @@ FileInfo = namedtuple('FileInfo',
 _open_data_file = _lib.DWOpenDataFile
 _open_data_file.argtypes = (ct.c_char_p, ct.POINTER(dh.DWFileInfo))
 _open_data_file.restype = ct.c_int
-def open_data_file(filename):
+def open_data_file(filename, fsencoding=None):
     """Open dewe data file for the lib to read.
 
     Return a namedtuple with members (sample_rate, start_store_time,
     duration) on success.
 
-    Wraps:
+    filename
+        The filename as a str or bytes.
+
+    fsencoding
+        The wrapped function require bytes as the file name. If
+        `filename` is bytes, `fsencoding` is ignored. If `filename` is
+        str and `fsencoding` is None, os.fsencode() is used to encode
+        `filename` properly, else `fsencoding` is used for the
+        conversion.
+
+    Wraps
         DWStatus DWOpenDataFile(char* file_name, DWFileInfo* file_info);
 
     """
     info = dh.DWFileInfo()
-    try:
-        filename = filename.encode()
-    except AttributeError:
-        pass                    # bytes already we hope
+
+    if not type(filename) is bytes:
+        if fsencoding:
+            filename = filename.encode(fsencoding)
+        else:
+            filename = os.fsencode(filename)
+
     stat = _open_data_file(filename, ct.byref(info))
     if stat != 0:
         raise RuntimeError(dh.DWStatus(stat).name)
@@ -154,19 +168,28 @@ Channel = namedtuple('Channel', ('index', 'name', 'unit', 'description',
 _get_channel_list = _lib.DWGetChannelList
 _get_channel_list.argtypes = (ct.POINTER(dh.DWChannel),)
 _get_channel_list.restype = ct.c_int
-def get_channel_list():
+def get_channel_list(encoding=None):
     """Return a list with namedtuples with info on each channel.
 
-    Wraps:
-        DWStatus DWGetChannelList(DWChannel* channel_list);"""
+    `encoding` if given is used to decode the bytes retreived as the
+    `name`, `unit` and `description` components of the channel info. If
+    not given, `locale.getpreferredencding()` is used.
+
+    Wraps
+        DWStatus DWGetChannelList(DWChannel* channel_list);
+
+    """
 
     ch_list = (dh.DWChannel * get_channel_list_count())()
     stat = _get_channel_list(ch_list)
     if stat != 0:
         raise RuntimeError(dh.DWStatus(stat).name)
+    encoding = encoding or locale.getpreferredencoding()
     res = []
     for ch in ch_list:
-        res.append(Channel(ch.index, ch.name, ch.unit, ch.description,
+        res.append(Channel(ch.index, ch.name.decode(encoding),
+                           ch.unit.decode(encoding),
+                           ch.description.decode(encoding),
                            ch.color, ch.array_size, ch.data_type))
     return res
 
@@ -238,8 +261,7 @@ def channel_reduced(channel, reduction, encoding=None):
         rms = 4
 
     encoding : str
-        The encoding to use to encode `channel` to a byte string in case
-        `channel` is str.
+        encoding to pass to `get_channel_list()`, which see.
 
     Wraps:
         Nothing explicit. This is a support function to simplify getting
@@ -249,14 +271,10 @@ def channel_reduced(channel, reduction, encoding=None):
 
     index = None
 
-    try:
-        channel = channel.encode(encoding=encoding or
-                                 locale.getpreferredencoding())
-    except AttributeError:
-        pass
+    getter = type(channel) is int and attrgetter('index') or attrgetter('name')
 
-    for ch in get_channel_list():
-        if ch.name == channel or ch.index == channel:
+    for ch in get_channel_list(encoding):
+        if getter(ch) == channel:
             index = ch.index
             break
     else:                       # no break

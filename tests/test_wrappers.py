@@ -75,13 +75,13 @@ class TestWrappersTestfile2(unittest.TestCase):
     def test_get_channel_list(self):
         channels = wrappers.get_channel_list()
         self.assertEqual(channels[0],
-                         wrappers.Channel(index=0, name=b'Counting', unit=b'',
-                                          description=b'Rainflow',
+                         wrappers.Channel(index=0, name='Counting', unit='',
+                                          description='Rainflow',
                                           color=16711680, array_size=20,
                                           data_type=5))
         self.assertEqual(channels[1],
-                         wrappers.Channel(index=1, name=b'Peak/Valley',
-                                          unit=b'', description=b'',
+                         wrappers.Channel(index=1, name='Peak/Valley',
+                                          unit='', description='',
                                           color=16711680, array_size=1,
                                           data_type=5))
 
@@ -178,12 +178,12 @@ class TestWrappersExampleFile01(unittest.TestCase):
     def test_get_channel_list(self):
         channels = wrappers.get_channel_list()
         self.assertEqual(channels[0],
-                         wrappers.Channel(index=0, name=b'GPSvel', unit=b'kph',
-                                          description=b'v', color=16711680,
+                         wrappers.Channel(index=0, name='GPSvel', unit='kph',
+                                          description='v', color=16711680,
                                           array_size=1, data_type=2))
         self.assertEqual(channels[-1],
-                         wrappers.Channel(index=27, name=b'CNT 0', unit=b'm',
-                                          description=b'', color=65280,
+                         wrappers.Channel(index=27, name='CNT 0', unit='m',
+                                          description='', color=65280,
                                           array_size=1, data_type=4))
 
     def test_get_reduced_values_count(self):
