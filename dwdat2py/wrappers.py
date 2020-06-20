@@ -41,10 +41,10 @@ from collections import namedtuple
 import locale
 
 from . import DWDataReaderHeader as dh
+from . import libdirfind, DEWELIBDIR
 
-libdir = os.getenv('DEWELIBDIR')
-if libdir is None:
-    raise EnvironmentError('DEWELIBDIR environment variable not found')
+
+libdir = DEWELIBDIR or libdirfind()
 
 libname = os.path.join(libdir, 'DWDataReaderLib')
 if platform.architecture()[0] == '64bit':
