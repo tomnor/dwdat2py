@@ -1,11 +1,5 @@
 .. -*- coding: utf-8 -*-
 
-**Work in progress, the setup script is not ready and tested**
-
-**Package not on pypi yet**
-
-**Can be used for experiments**
-
 dwdat2py
 ========
 

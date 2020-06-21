@@ -9,9 +9,11 @@ TAGS: *.py */*.py
 test:
 	cd tests && $(PY) -m unittest -v $(TESTMODULES)
 
-.PHONY: dist
-dist:
+dist: *.py */*.py CHANGES.rst README.rst
 	$(PY) setup.py sdist bdist_wheel
+
+release: dist
+	twine upload dist/*
 
 .PHONY: install
 install:
