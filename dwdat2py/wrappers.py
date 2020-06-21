@@ -54,7 +54,7 @@ if platform.system() == 'Linux':
     libname += '.so'
 
 libname = os.path.abspath(libname)
-assert(os.path.exists(libname))
+assert(os.path.exists(libname) or os.path.exists(libname + '.dll'))
 
 _lib = ct.cdll.LoadLibrary(libname)
 
