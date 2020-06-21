@@ -90,3 +90,52 @@ def libdirfind():
                                 libdir)
 
     raise RuntimeError('%s found but no library path in it' % configfile)
+
+
+@contextmanager
+def wrappersimport(fn, fsencoding=None):
+    """Provide context access to the wrappers module.
+
+    Return a handle to the wrappers module in a context manager and file
+    `fn` (str) opened for operations (a .dxd file for example).
+    Initialization and deinitialization is provided by this context
+    manager, as well as opening and closing the file.
+
+    The file information resulting from opening the file is available as
+    a module level variable `fileinfo`, (`handle.fileinfo`).
+
+    The function that `wrappers.open_data_file` wraps require bytes as
+    file name. `fsencoding` is used in the call to
+    `wrappers.open_data_file` but is hopefully not necessary to specify
+    since os.fsencode() is used by default.
+
+    Example usage:
+
+    >>> import dwdat2py
+    >>> with dwdat2py.wrappersimport(fn) as wi:
+    ...    print(wi.fileinfo)
+    ...    chlist = wi.get_channel_list(encoding='latin1')
+    ...    for chinfo in chlist:
+    ...        # print the average values from each channel (1)
+    ...        print(wi.channel_reduced(chinfo.index, 1, encoding='latin1'))
+    ...    # get the "time stamps" (0)
+    ...    time = wi.channel_reduced(chlist[0].index, 0, encoding='latin1')
+
+    As with importing the wrappers module in the standard way, this will
+    fail if the shared library is not found.
+
+    """
+
+    from . import wrappers
+    wrappers.init()
+    init = True
+    fileinfo = wrappers.open_data_file(fn, fsencoding)
+    opened = True
+    wrappers.fileinfo = fileinfo
+    try:
+        yield wrappers
+    finally:
+        if opened:
+            wrappers.close_data_file()
+        if init:
+            wrappers.de_init()
