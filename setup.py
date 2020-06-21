@@ -1,7 +1,6 @@
-#!/usr/bin/env python
-
-from distutils.core import setup
+from setuptools import setup
 import re
+
 
 def version():
     with open('dwdat2py/__init__.py') as f:
@@ -12,9 +11,11 @@ def version():
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
 
+
 def pkg_readme():
     with open('README.rst') as fo:
         return fo.read()
+
 
 setup(name='dwdat2py',
       version=version(),
@@ -24,15 +25,15 @@ setup(name='dwdat2py',
       author_email='tomasn@posteo.net',
       url='https://github.com/tomnor/dwdat2py',
       download_url='https://github.com/tomnor/dwdat/tarball/master',
-      license='MIT',
+      license='Apache 2.0',
       packages=['dwdat2py'],
       classifiers=[
           "Intended Audience :: Science/Research",
+          "License :: OSI Approved :: Apache Software License",
           "Topic :: Scientific/Engineering :: Information Analysis",
-          "Topic :: Scientific/Engineering :: Visualization"
-          "Programming Language :: Python :: 2.7",
+          "Topic :: Scientific/Engineering :: Visualization",
+          "Programming Language :: Python :: 3",
           "Operating System :: POSIX :: Linux",
           "Operating System :: Microsoft :: Windows",
-          "Development Status :: 2 - Pre-Alpha",
-      ],
-  )
+          "Development Status :: 3 - Alpha"
+      ])

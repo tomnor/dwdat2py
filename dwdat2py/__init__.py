@@ -15,8 +15,9 @@
 
 import os
 import errno
+from contextlib import contextmanager
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 CONFIGBASENAME = 'dewelibdir'
 
@@ -47,7 +48,7 @@ def libdirfind():
 
     The environment variable is checked first.
 
-    Raise FileNotfounderror or RuntimeError on failure to find the
+    Raise FileNotFoundError or RuntimeError on failure to find the
     library directory.
 
     """
