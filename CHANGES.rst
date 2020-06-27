@@ -1,6 +1,19 @@
 Changelog
 =========
 
+0.3.0 (2020-06-xx)
+------------------
+
+- Two new functions to get "scaled" samples, the raw full speed data
+  samples, `get_scaled_samples_count()` and `get_scaled_samples()`.
+
+- A not documented function `get_storing_type()`
+  (`DWGetStoringType()`) added with a module level dict `STORING_TYPE`
+  to list the meaning of returned value.
+
+- Tests added for new functions.
+
+
 0.2.0 (2020-06-21)
 ------------------
 

@@ -6,6 +6,7 @@ import os
 import unittest
 import gzip
 from itertools import zip_longest
+from collections import namedtuple
 
 # Testing the local package code but dependencies need to be available on the
 # system.
@@ -28,6 +29,7 @@ if not os.path.exists(DATAFILE1):
         fo.write(fi.read())
 
 
+# reduced channels
 # (time_stamp, ave, min, max, rms)
 # keys are time stamp here
 DATAFILE1RECORDS_CH0 = {
@@ -43,6 +45,56 @@ DATAFILE2RECORDS_CH1 = {
     1.95: (0.0, 0.0, 0.0, 0.0),
     4.4: (0.0, 0.0, 0.0, 0.0)}
 
+Counts = namedtuple('Counts', ('scaled', 'reduced'))
+
+DATAFILE1COUNTS = {
+    0: Counts(9580, 192),
+    1: Counts(9580, 192),
+    3: Counts(9557, 192),
+    4: Counts(9557, 192),
+    6: Counts(4791, 192),
+    8: Counts(4791, 192),
+    10: Counts(4791, 192),
+    12: Counts(4791, 192),
+    14: Counts(479, 192),
+    16: Counts(4791, 192),
+    17: Counts(4791, 192),
+    18: Counts(4791, 192),
+    19: Counts(4791, 192),
+    21: Counts(4791, 192),
+    22: Counts(191, 192),
+    23: Counts(191, 192),
+    24: Counts(1838, 192),
+    25: Counts(1838, 192),
+    26: Counts(191, 192),
+    27: Counts(9580, 192),
+}
+
+DATAFILE1_TIMES_HEADS_TAILS = {
+    # Selected channels ([:5], [-5:]) time_stamps of get_scaled_samples()
+    0: ((0.0, 0.01, 0.02, 0.03, 0.04), (95.75, 95.76, 95.77, 95.78, 95.79)),
+    3: ((0.0, 0.009999999776482582, 0.019999999552965164,
+         0.029999999329447746, 0.03999999910593033),
+        (95.75, 95.75999999046326, 95.77000001072884,
+         95.7800000011921, 95.78999999165535)),
+    6: ((0.0, 0.019999999552965164, 0.03999999910593033,
+         0.05999999865889549, 0.07999999821186066),
+        (95.70999999344349, 95.73000000417233, 95.75,
+         95.77000001072884, 95.78999999165535)),
+    14: ((0.18000000715255737, 0.3700000047683716, 0.5700000002980232,
+          0.7700000107288361, 0.9699999988079071),
+         (94.96000000834465, 95.15999999642372, 95.36000001430511,
+          95.5599999986589, 95.75999999046326)),
+    22: ((0.6400000005960464, 1.1400000005960464, 1.6400000005960464,
+          2.1400000005960464, 2.6400000005960464),
+         (93.64000000059605, 94.14000000059605, 94.64000000059605,
+          95.14000000059605, 95.64000000059605)),
+    24: ((0.6800000071525574, 0.7199999988079071, 0.7800000011920929,
+          0.8199999928474426, 0.8799999952316284),
+         (93.93999999761581, 93.97999998927116, 94.11999999731779,
+          94.2800000011921, 94.31999999284744)),
+}
+
 
 class TestWrappersTestfile2(unittest.TestCase):
 
@@ -57,6 +109,11 @@ class TestWrappersTestfile2(unittest.TestCase):
 
     def test_open_data_file_result(self):
         self.assertTrue(isinstance(self.dwfileinfo, wrappers.FileInfo))
+
+    def test_get_storing_type(self):
+        storeint = wrappers.get_storing_type()
+        self.assertEqual(storeint, 0)
+        self.assertEqual(wrappers.STORING_TYPE[storeint], 'ST_ALWAYS_FAST')
 
     def test_fileinfo_members(self):
         self.assertEqual(self.dwfileinfo.sample_rate, 20000.0)
@@ -96,6 +153,13 @@ class TestWrappersTestfile2(unittest.TestCase):
         for timestamp, values in DATAFILE2RECORDS_CH1.items():
             for recvalue, should in zip_longest(recdict[timestamp], values):
                 self.assertEqual(recvalue, should)
+
+    def test_get_scaled_samples_count(self):
+        self.assertEqual(wrappers.get_scaled_samples_count(1), 0)
+
+    def test_get_scaled_samples(self):
+        # DATAFILE2 has no normal scaled samples
+        pass
 
     def test_channel_reduced_time_stamps_by_index(self):
         #      0        1    2    3    4
@@ -161,6 +225,11 @@ class TestWrappersExampleFile01(unittest.TestCase):
     def test_open_data_file_result(self):
         self.assertTrue(isinstance(self.dwfileinfo, wrappers.FileInfo))
 
+    def test_get_storing_type(self):
+        storeint = wrappers.get_storing_type()
+        self.assertEqual(storeint, 0)
+        self.assertEqual(wrappers.STORING_TYPE[storeint], 'ST_ALWAYS_FAST')
+
     def test_fileinfo_members(self):
         self.assertEqual(self.dwfileinfo.sample_rate, 100.0)
         # assertAlmostEqual is also available
@@ -197,6 +266,22 @@ class TestWrappersExampleFile01(unittest.TestCase):
         for timestamp, values in DATAFILE1RECORDS_CH0.items():
             for recvalue, should in zip_longest(recdict[timestamp], values):
                 self.assertEqual(recvalue, should)
+
+    def test_get_scaled_samples_count(self):
+        # self.assertEqual(wrappers.get_scaled_samples_count(1), 0)
+        chlist = wrappers.get_channel_list()
+        for ch in chlist:
+            count = wrappers.get_scaled_samples_count(ch.index)
+            self.assertEqual(count, DATAFILE1COUNTS[ch.index].scaled)
+
+    def test_get_scaled_samples(self):
+        headtails = DATAFILE1_TIMES_HEADS_TAILS
+        chlist = wrappers.get_channel_list()
+        for ch in chlist:
+            if ch.index in headtails:
+                count = wrappers.get_scaled_samples_count(ch.index)
+                time, data = wrappers.get_scaled_samples(ch.index, 0, count)
+                self.assertEqual((time[:5], time[-5:]), headtails[ch.index])
 
     def test_channel_reduced_time_stamps_by_index(self):
         #      0        1    2    3    4

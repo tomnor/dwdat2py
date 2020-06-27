@@ -58,7 +58,7 @@ assert(os.path.exists(libname) or os.path.exists(libname + '.dll'))
 
 _lib = ct.cdll.LoadLibrary(libname)
 
-# ------------------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 _init = _lib.DWInit
 _init.restype = ct.c_int
@@ -69,7 +69,7 @@ def init():
         DWStatus DWInit();"""
     return _init()
 
-# ------------------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 _de_init = _lib.DWDeInit
 _de_init.restype = ct.c_int
@@ -81,7 +81,31 @@ def de_init():
     """
     return _de_init()
 
-# ------------------------------------------------------------------------------
+# --------------------------------------------------------------------
+
+_get_storing_type = _lib.DWGetStoringType
+_get_storing_type.restype = ct.c_int
+def get_storing_type():
+    """Return the storing type of the data file.
+
+    One of the following integers:
+
+    0 --> ST_ALWAYS_FAST
+    1 --> ST_ALWAYS_SLOW
+    2 --> ST_FAST_ON_TRIGGER
+    3 --> ST_FAST_ON_TRIGGER_SLOW_OTH
+
+    A STORING_TYPE dict is provided by this module.
+
+    Wraps:
+        int DWGetStoringType();
+        (not documented)
+
+    """
+
+    return _get_storing_type()
+
+# --------------------------------------------------------------------
 
 FileInfo = namedtuple('FileInfo',
                       ('sample_rate', 'start_store_time', 'duration'))
@@ -122,7 +146,7 @@ def open_data_file(filename, fsencoding=None):
 
     return FileInfo(info.sample_rate, info.start_store_time, info.duration)
 
-# ------------------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 _close_data_file = _lib.DWCloseDataFile
 _close_data_file.restype = ct.c_int
@@ -135,7 +159,7 @@ def close_data_file():
         DWStatus DWCloseDataFile();"""
     return _close_data_file()
 
-# ------------------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 _get_version = _lib.DWGetVersion
 _get_version.restype = ct.c_int
@@ -146,7 +170,7 @@ def get_version():
         int DWGetVersion();"""
     return _get_version()
 
-# ------------------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 _get_channel_list_count = _lib.DWGetChannelListCount
 _get_channel_list_count.restype = ct.c_int
@@ -161,7 +185,7 @@ def get_channel_list_count():
         raise RuntimeError('get_channel_list_count returned -1')
     return num
 
-# ------------------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 Channel = namedtuple('Channel', ('index', 'name', 'unit', 'description',
                                  'color', 'array_size', 'data_type'))
@@ -193,7 +217,59 @@ def get_channel_list(encoding=None):
                            ch.color, ch.array_size, ch.data_type))
     return res
 
-# ------------------------------------------------------------------------------
+# --------------------------------------------------------------------
+
+_get_scaled_samples_count = _lib.DWGetScaledSamplesCount
+_get_scaled_samples_count.argtypes = (ct.c_int,)
+_get_scaled_samples_count.restype = ct.c_longlong
+def get_scaled_samples_count(ch_index):
+    """Return the number of samples for channel with given index.
+
+    Wraps
+    __int64 DWGetScaledSamplesCount(int ch_index);
+
+    """
+
+    return _get_scaled_samples_count(ch_index)
+
+# --------------------------------------------------------------------
+
+# DWStatus DWGetScaledSamples(int ch_index, __int64 position, int count,
+# double* data, double* time_stamp);
+# Parameters:
+#       ch_index – ch. identifier
+#       position – offset position; the first sample has position 0
+#       count – number of samples to be returned
+#       data – channel values; variable should be allocated (double
+# precision)
+#       time_stamp – channel time stamps; variable should be allocated (in
+# seconds)
+
+# Return value: See above enumerator
+# Description: This function returns scaled data from the direct buffer.
+
+_get_scaled_samples = _lib.DWGetScaledSamples
+_get_scaled_samples.argtypes = (ct.c_int, ct.c_longlong, ct.c_int,
+                                ct.POINTER(ct.c_double),
+                                ct.POINTER(ct.c_double))
+_get_scaled_samples.restype = ct.c_int
+def get_scaled_samples(ch_index, position, count):
+    """Return "full speed" (time_stamp, data) for channel with given index.
+
+    Wraps
+        DWStatus DWGetScaledSamples(int ch_index, __int64 position,
+                                    int count, double* data,
+                                    double* time_stamp);
+    """
+
+    data = (ct.c_double * (count - position))()  # (c_double_Array_...)
+    time = (ct.c_double * (count - position))()
+    stat = _get_scaled_samples(ch_index, position, count, data, time)
+    if stat != 0:
+        raise RuntimeError(dh.DWStatus(stat).name)
+    return tuple(time), tuple(data)
+
+# --------------------------------------------------------------------
 
 _get_reduced_values_count = _lib.DWGetReducedValuesCount
 _get_reduced_values_count.argtypes = (ct.c_int, ct.POINTER(ct.c_int),
@@ -217,7 +293,7 @@ def get_reduced_values_count(ch_index):
         raise RuntimeError(dh.DWStatus(stat).name)
     return (count.value, seconds.value)
 
-# ------------------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 _get_reduced_values = _lib.DWGetReducedValues
 _get_reduced_values.argtypes = (ct.c_int, ct.c_int, ct.c_int,
@@ -241,7 +317,7 @@ def get_reduced_values(ch_index, position, count):
         raise RuntimeError(dh.DWStatus(stat).name)
     return [(v.time_stamp, v.ave, v.min, v.max, v.rms) for v in data]
 
-# ------------------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 def channel_reduced(channel, reduction, encoding=None):
     """Return a flat list of data for channel reduced to reduction.
@@ -282,3 +358,12 @@ def channel_reduced(channel, reduction, encoding=None):
 
     cnt = get_reduced_values_count(index)[0]
     return [rec[reduction] for rec in get_reduced_values(index, 0, cnt)]
+
+
+
+STORING_TYPE = {
+    0: 'ST_ALWAYS_FAST',
+    1: 'ST_ALWAYS_SLOW',
+    2: 'ST_FAST_ON_TRIGGER',
+    3: 'ST_FAST_ON_TRIGGER_SLOW_OTH'
+}
