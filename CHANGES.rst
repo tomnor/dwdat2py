@@ -1,15 +1,18 @@
 Changelog
 =========
 
-0.3.0 (2020-06-xx)
+0.3.0 (2020-07-xx)
 ------------------
 
 - Two new functions to get "scaled" samples, the raw full speed data
   samples, `get_scaled_samples_count()` and `get_scaled_samples()`.
+  The latter respects `array_size` (array type of channels).
 
 - A not documented function `get_storing_type()`
   (`DWGetStoringType()`) added with a module level dict `STORING_TYPE`
   to list the meaning of returned value.
+
+- New functions `get_channel_factors`, `get_channel_props.`
 
 - Tests added for new functions.
 

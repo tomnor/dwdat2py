@@ -189,9 +189,9 @@ Access to the wrappers module is optionally provided as a context manager:
         ...    chlist = wi.get_channel_list(encoding='latin1')
         ...    for chinfo in chlist:
         ...        # print the average values from each channel (1)
-        ...        print(wi.channel_reduced(chinfo.index, 1, encoding='latin1'))
+        ...        print(wi.channel_reduced(chinfo.index, 1))
         ...    # get the "time stamps" (0)
-        ...    time = wi.channel_reduced(chlist[0].index, 0, encoding='latin1')
+        ...    time = wi.channel_reduced(chlist[0].index, 0)
 
         As with importing the wrappers module in the standard way, this will
         fail if the shared library is not found.
