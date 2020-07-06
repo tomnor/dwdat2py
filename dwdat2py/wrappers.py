@@ -219,6 +219,120 @@ def get_channel_list(encoding=None):
 
 # --------------------------------------------------------------------
 
+_get_channel_factors = _lib.DWGetChannelFactors
+_get_channel_factors.argtypes = (ct.c_int, ct.POINTER(ct.c_double),
+                                 ct.POINTER(ct.c_double))
+_get_channel_factors.restype = ct.c_int
+def get_channel_factors(ch_index):
+    """
+    Return channel scale and offset as (scale, offset).
+
+    Wraps
+        DWStatus DWGetChannelFactors(int ch_index, double* scale,
+                                     double* offset);
+
+    """
+    scale, offset = ct.c_double(), ct.c_double()
+    stat = _get_channel_factors(ch_index, ct.byref(scale), ct.byref(offset))
+    if stat != 0:
+        raise RuntimeError(dh.DWStatus(stat).name)
+    return (scale.value, offset.value)
+
+# --------------------------------------------------------------------
+
+_get_channel_props = _lib.DWGetChannelProps
+_get_channel_props.argtypes = (ct.c_int, ct.c_int, ct.c_voidp,
+                               ct.POINTER(ct.c_int))
+_get_channel_props.restype = ct.c_int
+def get_channel_props(ch_index, ch_prop):
+    """Return the property specifed by `ch_prop`.
+
+    `ch_prop` shall be one of the integers listed below. It is not
+    necessary to make preparatory calls to length variants. The two last
+    "commented" options are not supported by this function.
+
+    DW_DATA_TYPE = 0,            # get data type
+    DW_DATA_TYPE_LEN_BYTES = 1,  # get length of data type in bytes
+    DW_CH_INDEX = 2,             # get channel index
+    DW_CH_INDEX_LEN = 3,         # get length of channel index
+    DW_CH_TYPE = 4,              # get channel type
+    DW_CH_SCALE = 5,             # get channel scale
+    DW_CH_OFFSET = 6,            # get channel offset
+    DW_CH_XML = 7,               # get channel XML
+    DW_CH_XML_LEN = 8,           # get length of channel XML
+    DW_CH_XMLPROPS = 9,          # get channel XML properties
+    DW_CH_XMLPROPS_LEN = 10,     # get length of channel XML properties
+    # DW_CH_CUSTOMPROPS = 11,      # get channel XML custom properties
+    # DW_CH_CUSTOMPROPS_COUNT = 12 # get length of channel XML custom
+
+    Wraps
+        DWStatus DWGetChannelProps(int ch_index, enum DWChannelProps ch_prop,
+                                   void* buffer, int* max_len);
+
+    """
+
+    P = dh.DWChannelProps
+    p = P(ch_prop)
+    # default prep
+    maxlen = ct.c_int(ct.sizeof(ct.c_int))
+    pbuffer = ct.create_string_buffer(maxlen.value)
+
+    if p.value in (0, 1, 2, 3, 4, 8, 10):  # int return types
+        stat = _get_channel_props(ch_index, p.value, pbuffer,
+                                  ct.byref(maxlen))
+        if stat != 0:
+            raise RuntimeError(dh.DWStatus(stat).name)
+        return ct.cast(pbuffer, ct.POINTER(ct.c_int)).contents.value
+
+    elif p.value in (5, 6):  # double return types
+        maxlen = ct.c_int(ct.sizeof(ct.c_double))
+        pbuffer = ct.create_string_buffer(maxlen.value)
+        stat = _get_channel_props(ch_index, p.value, pbuffer,
+                                  ct.byref(maxlen))
+        if stat != 0:
+            raise RuntimeError(dh.DWStatus(stat).name)
+        return ct.cast(pbuffer, ct.POINTER(ct.c_double)).contents.value
+
+    elif p.value == 7:     # char buffer (xml) return type
+        stat = _get_channel_props(ch_index, 8, pbuffer, ct.byref(maxlen))
+        if stat != 0:
+            raise RuntimeError(dh.DWStatus(stat).name)
+
+        strlen = ct.cast(pbuffer, ct.POINTER(ct.c_int)).contents.value
+        maxlen = ct.c_int(strlen + 1)
+        # segfaults seen when strlen has been 0, escape that
+        if maxlen.value < 2:
+            return b''
+        pbuffer = ct.create_string_buffer(maxlen.value)
+        stat = _get_channel_props(ch_index, p.value, pbuffer,
+                                  ct.byref(maxlen))
+        if stat != 0:
+            raise RuntimeError(dh.DWStatus(stat.name))
+
+        return pbuffer.value    # bytes
+
+    elif p.value == 9:     # char buffer (xml) return type
+        stat = _get_channel_props(ch_index, 10, pbuffer, ct.byref(maxlen))
+        if stat != 0:
+            raise RuntimeError(dh.DWStatus(stat).name)
+
+        strlen = ct.cast(pbuffer, ct.POINTER(ct.c_int)).contents.value
+        maxlen = ct.c_int(strlen + 1)
+        # segfaults seen when strlen has been 0, escape that
+        if maxlen.value < 2:
+            return b''
+        pbuffer = ct.create_string_buffer(maxlen.value)
+        stat = _get_channel_props(ch_index, p.value, pbuffer,
+                                  ct.byref(maxlen))
+        if stat != 0:
+            raise RuntimeError(dh.DWStatus(stat).name)
+
+        return pbuffer.value    # bytes
+
+
+# --------------------------------------------------------------------
+
+
 _get_scaled_samples_count = _lib.DWGetScaledSamplesCount
 _get_scaled_samples_count.argtypes = (ct.c_int,)
 _get_scaled_samples_count.restype = ct.c_longlong
@@ -226,7 +340,7 @@ def get_scaled_samples_count(ch_index):
     """Return the number of samples for channel with given index.
 
     Wraps
-    __int64 DWGetScaledSamplesCount(int ch_index);
+        __int64 DWGetScaledSamplesCount(int ch_index);
 
     """
 
@@ -358,7 +472,6 @@ def channel_reduced(channel, reduction, encoding=None):
 
     cnt = get_reduced_values_count(index)[0]
     return [rec[reduction] for rec in get_reduced_values(index, 0, cnt)]
-
 
 
 STORING_TYPE = {
