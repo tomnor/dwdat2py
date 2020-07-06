@@ -465,7 +465,8 @@ def channel_reduced(channel, reduction, encoding=None):
         rms = 4
 
     encoding : str
-        encoding to pass to `get_channel_list()`, which see.
+        encoding to pass to `get_channel_list()`, which see. Ignored
+        (not meaningful) if channel is int.
 
     Wraps:
         Nothing explicit. This is a support function to simplify getting
@@ -473,18 +474,17 @@ def channel_reduced(channel, reduction, encoding=None):
 
     """
 
-    index = None
+    index = channel if type(channel) is int else None
 
-    getter = type(channel) is int and attrgetter('index') or attrgetter('name')
+    if index is None:
+        for ch in get_channel_list(encoding):
+            if ch.name == channel:
+                index = ch.index
+                break
+        else:                       # no break
+            raise ValueError(channel, 'not found in data')
 
-    for ch in get_channel_list(encoding):
-        if getter(ch) == channel:
-            index = ch.index
-            break
-    else:                       # no break
-        raise ValueError(channel, 'not found in data')
-
-    cnt = get_reduced_values_count(index)[0]
+    cnt, _ = get_reduced_values_count(index)
     return [rec[reduction] for rec in get_reduced_values(index, 0, cnt)]
 
 
