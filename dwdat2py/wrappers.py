@@ -329,9 +329,7 @@ def get_channel_props(ch_index, ch_prop):
 
         return pbuffer.value    # bytes
 
-
 # --------------------------------------------------------------------
-
 
 _get_scaled_samples_count = _lib.DWGetScaledSamplesCount
 _get_scaled_samples_count.argtypes = (ct.c_int,)
@@ -367,17 +365,33 @@ _get_scaled_samples.argtypes = (ct.c_int, ct.c_longlong, ct.c_int,
                                 ct.POINTER(ct.c_double),
                                 ct.POINTER(ct.c_double))
 _get_scaled_samples.restype = ct.c_int
-def get_scaled_samples(ch_index, position, count):
+def get_scaled_samples(ch_index, position, count, array_size=1):
     """Return "full speed" (time_stamp, data) for channel with given index.
+
+    position : int
+        offset position, the first sample has position 0.
+
+    count : int
+        Number of samples to be returned
+
+    array_size : int
+        As given for respective channel by `get_channel_list()`. This
+        is equal to 1 for most normal channels.
 
     Wraps
         DWStatus DWGetScaledSamples(int ch_index, __int64 position,
                                     int count, double* data,
                                     double* time_stamp);
+
+    Note
+        The `len` of returned data ought to be array_size x
+        time_stamp. This means that if array_size > 1, data returned
+        is longer than time_stamp returned, by said relation.
+
     """
 
-    data = (ct.c_double * (count - position))()  # (c_double_Array_...)
-    time = (ct.c_double * (count - position))()
+    data = (ct.c_double * (count * array_size))()  # (c_double_Array_...)
+    time = (ct.c_double * (count))()
     stat = _get_scaled_samples(ch_index, position, count, data, time)
     if stat != 0:
         raise RuntimeError(dh.DWStatus(stat).name)
