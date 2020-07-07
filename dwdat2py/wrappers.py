@@ -197,7 +197,7 @@ def get_channel_list(encoding=None):
 
     `encoding` if given is used to decode the bytes retreived as the
     `name`, `unit` and `description` components of the channel info. If
-    not given, `locale.getpreferredencding()` is used.
+    not given, `locale.getpreferredencoding()` is used.
 
     Wraps
         DWStatus DWGetChannelList(DWChannel* channel_list);
@@ -244,12 +244,16 @@ _get_channel_props = _lib.DWGetChannelProps
 _get_channel_props.argtypes = (ct.c_int, ct.c_int, ct.c_voidp,
                                ct.POINTER(ct.c_int))
 _get_channel_props.restype = ct.c_int
-def get_channel_props(ch_index, ch_prop):
+def get_channel_props(ch_index, ch_prop, encoding=None):
     """Return the property specifed by `ch_prop`.
 
     `ch_prop` shall be one of the integers listed below. It is not
     necessary to make preparatory calls to length variants. The two last
     "commented" options are not supported by this function.
+
+    `encoding` is used to decode the bytes returned from the wrapped
+    function when `ch_prop` is 7 or 9. `locale.getpreferredencoding()`
+    is used as a default.
 
     DW_DATA_TYPE = 0,            # get data type
     DW_DATA_TYPE_LEN_BYTES = 1,  # get length of data type in bytes
@@ -276,6 +280,7 @@ def get_channel_props(ch_index, ch_prop):
     # default prep
     maxlen = ct.c_int(ct.sizeof(ct.c_int))
     pbuffer = ct.create_string_buffer(maxlen.value)
+    encoding = encoding or locale.getpreferredencoding()
 
     if p.value in (0, 1, 2, 3, 4, 8, 10):  # int return types
         stat = _get_channel_props(ch_index, p.value, pbuffer,
@@ -309,7 +314,7 @@ def get_channel_props(ch_index, ch_prop):
         if stat != 0:
             raise RuntimeError(dh.DWStatus(stat.name))
 
-        return pbuffer.value    # bytes
+        return pbuffer.value.decode(encoding)
 
     elif p.value == 9:     # char buffer (xml) return type
         stat = _get_channel_props(ch_index, 10, pbuffer, ct.byref(maxlen))
@@ -327,7 +332,7 @@ def get_channel_props(ch_index, ch_prop):
         if stat != 0:
             raise RuntimeError(dh.DWStatus(stat).name)
 
-        return pbuffer.value    # bytes
+        return pbuffer.value.decode(encoding)
 
 # --------------------------------------------------------------------
 
