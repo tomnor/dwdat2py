@@ -1,5 +1,5 @@
 
-DWDataReader - Dynamic Link Library (v4.2.0.11)
+DWDataReader - Dynamic Link Library (v4.2.0.12)
 
 Data structure:
 
@@ -11,12 +11,12 @@ enum DWStatus    // status returned from library function calls
       DWSTAT_ERROR_FILE_ALREADY_IN_USE = 3,      // file already in use
       DWSTAT_ERROR_FILE_CORRUPT = 4,             // file corrupted
       DWSTAT_ERROR_NO_MEMORY_ALLOC = 5           // memory not allocated
-      DWSTAT_ERROR_CREATE_DEST_FILE = 6,         // error creating dest.
-file (only for d7z files)
-      DWSTAT_ERROR_EXTRACTING_FILE = 7,               // error extracting
-data (only for d7z files)
-      DWSTAT_ERROR_CANNOT_OPEN_EXTRACTED_FILE = 8   // error opening
-extracted file (only for d7z files)
+      DWSTAT_ERROR_CREATE_DEST_FILE = 6,         // error creating dest. file (only for
+d7z files)
+      DWSTAT_ERROR_EXTRACTING_FILE = 7,               // error extracting data (only for
+d7z files)
+      DWSTAT_ERROR_CANNOT_OPEN_EXTRACTED_FILE = 8   // error opening extracted file (only
+for d7z files)
 };
 
 enum DWChannelProps    // used for DWGetChannelProps() calls
@@ -31,11 +31,9 @@ enum DWChannelProps    // used for DWGetChannelProps() calls
       DW_CH_XML = 7,              // get channel XML
       DW_CH_XML_LEN = 8,          // get length of channel XML
       DW_CH_XMLPROPS = 9,         // get channel XML properties
-      DW_CH_XMLPROPS_LEN = 10,         // get length of channel XML
-properties
+      DW_CH_XMLPROPS_LEN = 10,         // get length of channel XML properties
       DW_CH_CUSTOMPROPS = 11,           // get channel XML custom properties
-      DW_CH_CUSTOMPROPS_COUNT = 12      // get length of channel XML custom
-properties
+      DW_CH_CUSTOMPROPS_COUNT = 12      // get length of channel XML custom properties
 
 };
 
@@ -49,8 +47,7 @@ enum DWChannelType     // channel type
 struct DWFileInfo           // structure used for data file
 {
       double sample_rate;     // the sampling rate
-      double start_store_time;      // absolute time of the start of
-storing (days)
+      double start_store_time;      // absolute time of the start of storing (days)
       double duration;        // duration of data file (seconds)
 };
 
@@ -61,10 +58,8 @@ struct DWChannel       // structure used for Dewesoft channel
       char unit[20];          // the unit of a channel
       char description[200];        // the description of a channel
       unsigned int color;     // specifies the color of a channel
-      int array_size;         // length of the array channel (normal
-array_size = 1)
-      int data_type;          // channel data type – please see the data
-types below
+      int array_size;         // length of the array channel (normal array_size = 1)
+      int data_type;          // channel data type – please see the data types below
 };
 
 // data types in buffer
@@ -159,8 +154,7 @@ DWInit
 
 DWStatus DWInit();
 Return value: See above enumerator
-Description: This function call must be made prior to making any other
-calls.
+Description: This function call must be made prior to making any other calls.
 
 DWDeInit
 
@@ -172,8 +166,7 @@ DWGetVersion
 
 int DWGetVersion();
 Return value: version number
-Description: This function returns the version number of the dynamic link
-library.
+Description: This function returns the version number of the dynamic link library.
 
 DWOpenDataFile
 
@@ -188,15 +181,14 @@ DWCloseDataFile
 
 DWStatus DWCloseDataFile();
 Return value: See above enumerator
-Description: This should be called when shutting down the application or
-when not more access to a data file is needed.
+Description: This should be called when shutting down the application or when not more
+access to a data file is needed.
 
 DWGetChannelListCount
 
 int DWGetChannelListCount();
 Return value: the number of channels; rerutn -1 in the case of an error
-Description: This function returns the number of stored channels in data
-file.
+Description: This function returns the number of stored channels in data file.
 
 DWGetChannelList
 
@@ -218,21 +210,20 @@ Description: This function returns channel scale and offset.
 
 DWGetChannelProps
 
-DWStatus DWGetChannelProps(int ch_index, enum DWChannelProps ch_prop, void*
-buffer, int* max_len);
+DWStatus DWGetChannelProps(int ch_index, enum DWChannelProps ch_prop, void* buffer, int*
+max_len);
 Parameters:
       ch_index – channel index
       ch_prop – channel property selector (see DWChannelProps enumerator)
       buffer – return buffer
       max_len – buffer length
 Return value: See above enumerator
-Description: This function returns channel property specified with the
-ch_prop selector. Please note that prior retrieving a particular property
-buffer must be properly allocated. For example: In case of retrieving
-channel XML the DWGetChannelProps() must be first called with DW_CH_XML_LEN
-selector in order to retrieve the actual XML length and use it to properly
-allocate buffer. Afterwards, DWGetChannelProps() is called with DW_CH_XML
-selector to retrieve the actual XML data.
+Description: This function returns channel property specified with the ch_prop selector.
+Please note that prior retrieving a particular property buffer must be properly
+allocated. For example: In case of retrieving channel XML the DWGetChannelProps() must be
+first called with DW_CH_XML_LEN selector in order to retrieve the actual XML length and
+use it to properly allocate buffer. Afterwards, DWGetChannelProps() is called with
+DW_CH_XML selector to retrieve the actual XML data.
 
 
 DWGetScaledSamplesCount
@@ -241,21 +232,18 @@ __int64 DWGetScaledSamplesCount(int ch_index);
 Parameters:
       ch_index – ch. identifier
 Return value: the number of samples
-Description: This function returns the number of scaled samples of a
-channel.
+Description: This function returns the number of scaled samples of a channel.
 
 DWGetScaledSamples
 
-DWStatus DWGetScaledSamples(int ch_index, __int64 position, int count,
-double* data, double* time_stamp);
+DWStatus DWGetScaledSamples(int ch_index, __int64 position, int count, double* data,
+double* time_stamp);
 Parameters:
       ch_index – ch. identifier
       position – offset position; the first sample has position 0
       count – number of samples to be returned
-      data – channel values; variable should be allocated (double
-precision)
-      time_stamp – channel time stamps; variable should be allocated (in
-seconds)
+      data – channel values; variable should be allocated (double precision)
+      time_stamp – channel time stamps; variable should be allocated (in seconds)
 
 Return value: See above enumerator
 Description: This function returns scaled data from the direct buffer.
@@ -263,13 +251,13 @@ Description: This function returns scaled data from the direct buffer.
 
 DWGetRawSamplesCount
 
-Description: This function returns the number of raw samples of a channel.
-The function definition is identical to DWGetScaledSamplesCount().
+Description: This function returns the number of raw samples of a channel. The function
+definition is identical to DWGetScaledSamplesCount().
 
 DWGetRawSamples
 
-Description: This function returns raw data from the direct buffer. The
-function definition is identical to DWGetScaledSamples ().
+Description: This function returns raw data from the direct buffer. The function
+definition is identical to DWGetScaledSamples ().
 
 DWGetBinarySamplesCount
 
@@ -277,21 +265,18 @@ __int64 DWGetBinarySamplesCount(int ch_index);
 Parameters:
       ch_index – ch. identifier
 Return value: the number of samples in binary channel
-Description: This function returns the number of samples in a binary
-channel.
+Description: This function returns the number of samples in a binary channel.
 
 DWGetBinarySamples
 
-DWStatus DWGetBinarySamples(int ch_index, __int64 sampleIndex, char* data,
-double* time_stamp, int* datalen);
+DWStatus DWGetBinarySamples(int ch_index, __int64 sampleIndex, char* data, double*
+time_stamp, int* datalen);
 Parameters:
       ch_index – ch. identifier
-      sampleIndex – index of sample to retrieve; the first sample has
-position 0
-      data – binary values corresponding to retrieved sample; variable
-should be allocated
-      time_stamp – time stamp of the retrieved sample; variable should be
+      sampleIndex – index of sample to retrieve; the first sample has position 0
+      data – binary values corresponding to retrieved sample; variable should be
 allocated
+      time_stamp – time stamp of the retrieved sample; variable should be allocated
       data_len – number of bytes retrieved
 Return value: See above enumerator
 Description: This function returns binary data of the retrieved sample.
@@ -300,54 +285,46 @@ Description: This function returns binary data of the retrieved sample.
 
 DWGetBinarySamplesEx
 
-DWStatus DWGetBinarySamplesEx(int ch_index, __int64 sampleIndex, int count,
-char* data, double* time_stamp, int* datalen);
+DWStatus DWGetBinarySamplesEx(int ch_index, __int64 sampleIndex, int count, char* data,
+double* time_stamp, int* datalen);
 Parameters:
       ch_index – ch. identifier
-      sampleIndex – index of sample to retrieve; the first sample has
-position 0
+      sampleIndex – index of sample to retrieve; the first sample has position 0
       count - number of samples to be returned
-      data – binary values corresponding to retrieved sample (sample format
-= sample bin data length (int) + bin data (char)); variable should be
-allocated
-      time_stamp – time stamp of the retrieved sample; variable should be
-allocated
+      data – binary values corresponding to retrieved sample (sample format = sample bin
+data length (int) + bin data (char)); variable should be allocated
+      time_stamp – time stamp of the retrieved sample; variable should be allocated
       data_len – number of bytes retrieved
 Return value: See above enumerator
 Description: This function returns binary data of the retrieved sample.
 
 DWGetReducedValuesCount
 
-DWStatus DWGetReducedValuesCount(int ch_index, int* count, double*
-block_size);
+DWStatus DWGetReducedValuesCount(int ch_index, int* count, double* block_size);
 Parameters:
       ch_index – ch. identifier
       count –a number of reduced samples
       block_size –the size of the data block in seconds
 Return value: See above enumerator
-Description: This function returns the number of reduced values of a
-channel.
+Description: This function returns the number of reduced values of a channel.
 
 DWGetReducedValues
 
-DWStatus DWGetReducedValues(int ch_index, int position, int count, struct
-DWReducedValue* data);
+DWStatus DWGetReducedValues(int ch_index, int position, int count, struct DWReducedValue*
+data);
 Parameters:
       ch_index – ch. identifier
       position – offset position; the first samlpe has position 0
       count – a number of reduced samlpes
       data –reduced values; variable should be allocated
 Return value: See above enumerator
-Description: This function returns scaled reduced data from the reduced
-buffer.
+Description: This function returns scaled reduced data from the reduced buffer.
 
 DWGetHeaderEntryCount
 
 int DWGetHeaderEntryCount();
-Return value: the number of the data header entries; returns -1 in the case
-of an error
-Description: This function returns the number of fields in the project data
-header.
+Return value: the number of the data header entries; returns -1 in the case of an error
+Description: This function returns the number of fields in the project data header.
 
 DWGetHeaderEntryList
 
@@ -359,8 +336,7 @@ Description: This function returns the header entries.
 
 DWGetHeaderEntryText
 
-DWStatus DWGetHeaderEntryText(int ch_index, char* text_value, int
-text_value_size);
+DWStatus DWGetHeaderEntryText(int ch_index, char* text_value, int text_value_size);
 Parameters:
       ch_index – ch. identifier
       text_value – entry value
@@ -395,8 +371,7 @@ DWGetArrayInfoCount
 int DWGetArrayInfoCount(int ch_index);
 Parameters:
       ch_index – ch. identifier
-Return value: Returns the number of array axis; returns -1 in the case of
-an error
+Return value: Returns the number of array axis; returns -1 in the case of an error
 Description: This function returns the number of axis for array channel
 (DWChannel.array_size should be > 1).
 
@@ -411,8 +386,8 @@ Description: : This function returns the list of array info.
 
 DWGetArrayIndexValue
 
-DWStatus DWGetArrayIndexValue(int ch_index, int array_info_index, int
-array_value_index, char* value, int value_size);
+DWStatus DWGetArrayIndexValue(int ch_index, int array_info_index, int array_value_index,
+char* value, int value_size);
 Parameters:
       ch_index – ch. identifier
       array_info_index – axis identifier
@@ -434,8 +409,8 @@ The typical scenario for using DWDataReader library functions:
 
    3. Call DWGetChannelListCount to get number of channels
 
-   4. Allocate the DWChannel structures then call DWGetChannelList to get
-      channel list properties
+   4. Allocate the DWChannel structures then call DWGetChannelList to get channel list
+      properties
 
    5. Call DWGetScaledSamplesCount to get number of all samples
 
