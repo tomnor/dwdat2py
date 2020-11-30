@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.3.0 (2020-07-xx)
+0.3.0 (2020-12-xx)
 ------------------
 
 - Two new functions to get "scaled" samples, the raw full speed data
@@ -15,6 +15,9 @@ Changelog
 - New functions `get_channel_factors`, `get_channel_props.`
 
 - Tests added for new functions.
+
+- New conversion to DWDataReaderv.doc.txt for DWDataReader_v4_2_0_16
+  (although the doc heading say v4_2_0_15).
 
 
 0.2.0 (2020-06-21)
