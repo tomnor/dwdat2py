@@ -2,8 +2,19 @@ PY := python3
 PIP := pip3
 TESTMODULES := test_wrappers test_init
 
-TAGS: *.py */*.py
-	etags $?
+# "normal" assignment:
+TAGRX1 := '/[ \t]*\([^ \t]+\)[ \t]*=[ \t]*[^ \t]+/\1/'
+# the first of unpacked variables:
+TAGRX2 := '/[ \t]*\([^ \t]+\), *[^=]+?=[ \t]*[^ \t]+/\1/'
+# "normal" import
+TAGRX3 := '/[ \t]*import[ \t]+\([^ \t]+\)\>/\1/'
+# from m import ...:
+TAGRX4 := '/[ \t]*from +[^ \t]+ +import +\([^ \t]+\)/\1/'
+
+tags : TAGS
+TAGS : *.py */*.py
+	etags --regex=$(TAGRX1) --regex=$(TAGRX2) --regex=$(TAGRX3) \
+	      --regex=$(TAGRX4) $^
 
 .PHONY: test
 test:
