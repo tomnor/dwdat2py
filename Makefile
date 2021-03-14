@@ -1,6 +1,7 @@
 PY := python3
 PIP := pip3
 TESTMODULES := test_wrappers test_init
+LIBZIP := ~/Downloads/DWDataReader.zip
 
 # "normal" assignment:
 TAGRX1 := '/[ \t]*\([^ \t]+\)[ \t]*=[ \t]*[^ \t]+/\1/'
@@ -19,6 +20,10 @@ TAGS : *.py */*.py
 .PHONY: test
 test:
 	cd tests && $(PY) -m unittest -v $(TESTMODULES)
+
+libadmin : TMP_DEWELIBDIR
+TMP_DEWELIBDIR : $(LIBZIP)
+	utils/libadmin.sh $<
 
 dist: *.py */*.py CHANGES.rst README.rst
 	$(PY) setup.py sdist bdist_wheel
@@ -46,8 +51,9 @@ see-html: README.html CHANGES.html
 
 .PHONY: clean
 clean:
-	rm -f *.pyc *.html
-	rm -f dwdat2py/*.pyc
+	rm -f *.pyc */*.pyc *.html
+	rm -rf *__pycache__ */*__pycache__
 	rm -f tests/*d7d
 	rm -rf build *.egg-info dist
 	rm -f MANIFEST
+	rm -rf DWDataReader TMP_DEWELIBDIR
