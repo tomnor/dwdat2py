@@ -452,6 +452,115 @@ def get_reduced_values(ch_index, position, count):
 
 # --------------------------------------------------------------------
 
+_get_array_info_count = _lib.DWGetArrayInfoCount
+_get_array_info_count.argtypes = (ct.c_int,)
+_get_array_info_count.restype = ct.c_int
+def get_array_info_count(ch_index):
+    """Get the number of 'axis' for array channel `ch_index`.
+
+    Can be understood as the number of arrays in the channel
+    `ch_index`.
+
+    Return -1 in case of failure.
+
+    ch_index : int
+        The channel index.
+
+    Wraps
+        int DWGetArrayInfoCount(int ch_index);
+
+    """
+    return _get_array_info_count(ch_index)
+
+# --------------------------------------------------------------------
+# DWStatus DWGetArrayInfoList(int ch_index, DWArrayInfo* array_inf_list);
+# Parameters:
+#       ch_index – ch. Identifier
+#       array_inf_list – list of DWArrayInfo
+# Return value: See above enumerator
+# Description: : This function returns the list of array info.
+
+ArrayInfo = namedtuple('ArrayInfo', 'index name unit size')
+
+_get_array_info_list = _lib.DWGetArrayInfoList
+_get_array_info_list.argtypes = (ct.c_int, ct.POINTER(dh.DWArrayInfo))
+_get_array_info_list.returntype = ct.c_int
+def get_array_info_list(ch_index, encoding=None):
+    """Return namedtuples with info on each array in `ch_index`.
+
+    ch_index : int
+        The channel enumeration.
+
+    encoding : str (or None)
+        `locale.getpreferredencoding()` is used if `encding` is None.
+
+    Wraps
+        DWStatus DWGetArrayInfoList(int ch_index, DWArrayInfo* array_inf_list);
+    """
+    infolist = (dh.DWArrayInfo * get_array_info_count(ch_index))()
+
+    stat = _get_array_info_list(ch_index, infolist)
+    if stat != 0:
+        raise RuntimeError(dh.DWStatus(stat).name)
+    encoding = encoding or locale.getpreferredencoding()
+
+    return [ArrayInfo(info.index, info.name.decode(encoding),
+                      info.unit.decode(encoding), info.size)
+            for info in infolist]
+
+# --------------------------------------------------------------------
+# DWStatus DWGetArrayIndexValue(int ch_index, int array_info_index, int array_value_index,
+# char* value, int value_size);
+# Parameters:
+#       ch_index – ch. identifier
+#       array_info_index – axis identifier
+#       array_value_index –index of value on the axis
+#       value – value on the axis
+#       value_size – maximum size of string value
+# Return value: See above enumerator
+# Description: This function returns the specific value on the axis.
+
+_get_array_index_value = _lib.DWGetArrayIndexValue
+_get_array_index_value.argtypes = (ct.c_int, ct.c_int, ct.c_int, ct.c_char_p,
+                                   ct.c_int)
+_get_array_index_value.restype = ct.c_int
+def get_array_index_value(ch_index, array_info_index, array_value_index,
+                          value_size=255, encoding=None):
+    """Return the given array info element as a string.
+
+    ch_index : int
+        The channel enumeration.
+
+    array_info_index : int
+        The array enumeration, (what array).
+
+    array_value_index : int
+        The element index of the array.
+
+    value_size : int
+        The maximum expected length of the string.
+
+    encoding : str (or None)
+        `locale.getpreferredencoding()` is used if `encding` is None.
+
+    Wraps
+        DWStatus DWGetArrayIndexValue(int ch_index, int array_info_index,
+                                      int array_value_index, char* value,
+                                      int value_size);
+
+    """
+
+    textbuffer = ct.create_string_buffer(value_size + 1)
+    stat = _get_array_index_value(ch_index, array_info_index,
+                                  array_value_index, textbuffer, value_size)
+    if stat != 0:
+        raise RuntimeError(dh.DWStatus(stat.name))
+
+    return textbuffer.value.decode(encoding or locale.getpreferredencoding())
+
+# --------------------------------------------------------------------
+
+
 def channel_reduced(channel, reduction, encoding=None):
     """Return a flat list of data for channel reduced to reduction.
 
