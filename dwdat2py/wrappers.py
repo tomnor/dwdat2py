@@ -42,10 +42,9 @@ import locale
 from operator import attrgetter
 
 from . import DWDataReaderHeader as dh
-from . import libdirfind, DEWELIBDIR
+from . import libdirfind
 
-
-libdir = DEWELIBDIR or libdirfind()
+libdir = libdirfind()
 
 libname = os.path.join(libdir, 'DWDataReaderLib')
 if platform.architecture()[0] == '64bit':
