@@ -1,5 +1,5 @@
 
-DWDataReader - Dynamic Link Library (v4.2.0.15)
+DWDataReader - Dynamic Link Library (v4.2.0.17)
 
 Data structure:
 
