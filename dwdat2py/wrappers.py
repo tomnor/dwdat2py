@@ -370,7 +370,10 @@ _get_scaled_samples.argtypes = (ct.c_int, ct.c_longlong, ct.c_int,
                                 ct.POINTER(ct.c_double))
 _get_scaled_samples.restype = ct.c_int
 def get_scaled_samples(ch_index, position, count, array_size=1):
-    """Return "full speed" (time_stamp, data) for channel with given index.
+    """Return "full speed" (time_stamp, data) for channel `ch_index`.
+
+    ch_index : int
+        The channel enumeration.
 
     position : int
         offset position, the first sample has position 0.
@@ -379,8 +382,9 @@ def get_scaled_samples(ch_index, position, count, array_size=1):
         Number of samples to be returned
 
     array_size : int
-        As given for respective channel by `get_channel_list()`. This
-        is equal to 1 for most normal channels.
+        As given for respective channel by `get_channel_list()`
+        (Channel.array_size). This shall be 1 if the channel is not an
+        array channel.
 
     Wraps
         DWStatus DWGetScaledSamples(int ch_index, __int64 position,
@@ -388,9 +392,27 @@ def get_scaled_samples(ch_index, position, count, array_size=1):
                                     double* time_stamp);
 
     Note
-        The `len` of returned data ought to be array_size x
-        time_stamp. This means that if array_size > 1, data returned
-        is longer than time_stamp returned, by said relation.
+        To get an array out of the data returned, if channel is an
+        array channel (Channel.array_size > 1) and if the number of
+        arrays > 1 (get_scaled_samples_count() > 1), do this
+
+        startpos = n * array_size
+        array_n = data[startpos:startpos + array_size]
+
+        # 0 <= n < get_scaled_samples_count(ch_index)
+
+        n is the zero-based enumeration of the arrays (referring to
+        one of multiple arrays).
+
+        To get the one time_stamp element for the array, do time[n],
+        where time is returned from this function.
+
+        The above advice assumes this function is called the same way
+        with the array channel as with a non-array channel:
+
+        position = 0
+        count = get_scaled_samples_count(ch_index)
+        array_size = Channel.array_size
 
     """
 
