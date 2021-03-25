@@ -3,7 +3,7 @@
 dwdat2py
 ========
 
-DEWESoft, a company making hardware for data acquisition also provide
+DEWESoft, a company making hardware for data acquisition, also provide
 software applications (Windows) for working with data sets produced with
 the hardware. Files are in their proprietary formats such as .d7d, .d7z
 or .dxd. To work with the same data using a programming language like
@@ -32,77 +32,25 @@ into dwdat2py directory (the directory with the ``setup.py`` file) and say
 
 ::
 
-   python setup.py install
-
-or do
-
-::
-
    pip install .
 
-Get the library file(s) and prepare for use
-...........................................
+Libraries are shipped with dwdat2py
+...................................
 
-The library files are provided by DEWESoft as non-free binary blobs
-and they are not provided with an installation of dwdat2py. The
-library pack can be obtained gratis at
+By installation of dwdat2py, the Dewesoft libraries are included. Be
+aware that the libraries are gratis but non-free binary blobs. The
+libraries come with an EULA that permits use and redistribution in
+third party projects as far as I understand it.
+
+Libraries are installed in a sub-directory to dwdat2py called
+``libs``.
+
+Libraries are retrieved from
 https://download.dewesoft.com/list/developers where one has to
 register for an account to get it. Once logged in, find a button
 "Dewesoft Data Reader Library", enabling to download a zip file
-(DWDataReader.zip) with the library.
-
-Unpack that archive and put the library files for your system into a
-directory of choice, probably on the machine you work on. There is
-only one file needed, for example the ``DWDataReaderLib64.so`` or the
-``DWDataReaderLib64.dll``. There are a number of duplicates, the tree
-of the archive look like this::
-
-    DWDataReader_v4_2_0_11
-    ├── DWDataReaderv.doc
-    ├── DWDataReaderv.doc.txt
-    ├── EULA-DWDataReader.pdf
-    ├── Linux32&64 C
-    │   ├── DWDataReaderExample.c
-    │   ├── DWDataReaderLib64.so
-    │   ├── DWDataReaderLib.so
-    │   ├── DWLoadLib.c
-    │   ├── DWLoadLib.h
-    │   └── Red Hat 5
-    ├── Win32&64 C
-    │   ├── DReader_c_win.exe
-    │   ├── DReader_c_win.vcxproj
-    │   ├── DWDataReaderExample.c
-    │   ├── DWDataReaderLib64.dll
-    │   ├── DWDataReaderLib.dll
-    │   ├── DWLoadLib.c
-    │   └── DWLoadLib.h
-
-    ...
-
-Followed by a number of other language example directories. However,
-all the ``DWDataReaderLib64.dll`` files seem to be copies, so just
-pick one of them if on Windows, else pick one of the `.so` files.
-
-There are three ways to tell dwdat2py where the library is:
-
-- Set an environment variable ``DEWELIBDIR`` to the directory where
-  the library file are put.
-
-- Use a configuration file called ``dewelibdir`` optionally with the
-  extension ``.txt`` or ``.pth``. Enter a line in it pointing to the
-  library directory. Empty lines or lines starting with ``#`` are
-  ignored. Put that in either ``~/.config`` (Gnu/Linux) or in ``~`` on
-  Windows. In any case, os.path.expanduser() is used to figure out the
-  location of ``~``.
-
-- Or finally resort to setting ``dwdat2py.DEWELIBDIR`` to point to the
-  directory, (prior to importing ``dwdat2py.wrappers``)
-
-There is a "competing" package called dwdatareader_ which provide the
-library files with its distribution, so alternatively get the library
-file from there or try that package out as well [1]_.
-
-.. _dwdatareader: https://github.com/costerwi/dwdatareader
+(DWDataReader.zip) with the libs. Or skip that, since they are
+included with dwdat2py.
 
 Usage
 -----
@@ -160,7 +108,7 @@ And if you happen to know the index or name of the channels, this function
 should suffice to get at the data, channel by channel. Else you would need to
 call some helper functions first to prepare for this call.
 
-Access to the wrappers module is optionally provided as a context manager:
+Access to the wrappers module is also provided as a context manager:
 
 .. code:: python
 
@@ -204,6 +152,3 @@ Contribute
 Please report bugs and send suggestions or patches to the author. Or
 make an issue or pull request on the repo home at `Github
 <http://github.com/tomnor/dwdat2py>`_
-
-.. [1] dwdatareader solves the same problem but with higher level of abstraction
-       to the library functions.
