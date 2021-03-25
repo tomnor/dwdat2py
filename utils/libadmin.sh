@@ -28,6 +28,7 @@ BLOBS="DWDataReaderLib64.dll DWDataReaderLib.dll DWDataReaderLib64.so DWDataRead
 tmpdir=TMP_DEWELIBDIR
 summaryfile=libsummary
 docdiff=documentation.diff
+headerdiff=header.diff
 
 cnt=0
 OIFS="$IFS"
@@ -55,6 +56,10 @@ done
 doc=$(find $unzipped -name '*.doc')
 antiword -w 90 "$doc" > $tmpdir/$(basename $doc).txt
 
+# find and copy the py header file
+doc=$(find $unzipped -name DWDataReaderHeader.py)
+cp "$doc" $tmpdir
+
 echo -e "\nDIFFS ON INTERNAL COPIES" >> $tmpdir/$summaryfile
 DIRSTEMS="Lib64.dll- Lib.dll- Lib64.so- Lib.so-"
 for stem in $DIRSTEMS ; do
@@ -77,5 +82,10 @@ done
 
 echo -e "\nDIFF FROM WORKTREE DOC\n" >> $tmpdir/$summaryfile
 echo -e "See $docdiff" >> $tmpdir/$summaryfile
-diff -u $treelibdir/*doc.txt $tmpdir/*doc.txt > $tmpdir/$docdiff
+diff -us $treelibdir/*doc.txt $tmpdir/*doc.txt > $tmpdir/$docdiff
+
+echo -e "\nDIFF FROM WORKTREE PY HEADER\n" >> $tmpdir/$summaryfile
+echo -e "See $headerdiff" >> $tmpdir/$summaryfile
+diff -us dwdat2py/DWDataReaderHeader.py $tmpdir/DWDataReaderHeader.py > $tmpdir/$headerdiff
+
 echo "See $tmpdir/$summaryfile for diffs"
