@@ -27,6 +27,7 @@ setup(name='dwdat2py',
       download_url='https://github.com/tomnor/dwdat/tarball/master',
       license='Apache 2.0',
       packages=['dwdat2py'],
+      package_data={'dwdat2py': ['libs/*so', 'libs/*dll', 'libs/*txt']},
       classifiers=[
           "Intended Audience :: Science/Research",
           "License :: OSI Approved :: Apache Software License",
