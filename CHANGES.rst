@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.3.0 (2021-03-xx)
+0.3.0 (2021-03-25)
 ------------------
 
 - Libraries from Dewesoft included with dwdat2py installation.
