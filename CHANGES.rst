@@ -1,8 +1,12 @@
 Changelog
 =========
 
-0.3.0 (2020-12-xx)
+0.3.0 (2021-03-xx)
 ------------------
+
+- Libraries from Dewesoft included with dwdat2py installation.
+
+- README.rst updated about the libs.
 
 - Two new functions to get "scaled" samples, the raw full speed data
   samples, `get_scaled_samples_count()` and `get_scaled_samples()`.
@@ -14,10 +18,12 @@ Changelog
 
 - New functions `get_channel_factors`, `get_channel_props.`
 
-- Tests added for new functions.
+- Array related functions `get_array_info_count`, `get_array_info_list`
+  and `get_array_index_value` implemented.
 
-- New conversion to DWDataReaderv.doc.txt for DWDataReader_v4_2_0_16
-  (although the doc heading say v4_2_0_15).
+- Added repo admin shell script utils/libadmin.sh to simplify commiting
+  new version of the libraries. This script is now also responsible for
+  the conversion of the doc file to text documentation.
 
 
 0.2.0 (2020-06-21)
