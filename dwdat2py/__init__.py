@@ -12,6 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Read Dewesoft data files using a shared library.
+
+Access to the wrappers module is provided here by the `wrappersimport`
+function. It is decorated with a context manager and is the
+recommended way to use the wrappers module. See docstring of
+`wrappersimport`.
+
+"""
+
 
 import os
 import errno
