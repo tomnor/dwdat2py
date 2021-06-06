@@ -7,5 +7,5 @@
 MANIFEST
 TAGS
 TMP_DEWELIBDIR
-DWDataReader
+DWDataReader*
 *.zip
