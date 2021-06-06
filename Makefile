@@ -56,4 +56,4 @@ clean:
 	rm -f tests/*d7d
 	rm -rf build *.egg-info dist
 	rm -f MANIFEST
-	rm -rf DWDataReader TMP_DEWELIBDIR
+	rm -rf DWDataReader* TMP_DEWELIBDIR

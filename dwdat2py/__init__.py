@@ -26,7 +26,7 @@ import os
 import errno
 from contextlib import contextmanager
 
-__version__ = '0.3.0'
+__version__ = '0.3.1'
 
 DEWELIBDIR = ''
 """Set this variable to the directory of the dewesoft shared libraries

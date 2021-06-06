@@ -1,6 +1,18 @@
 Changelog
 =========
 
+0.3.1 (2021-06-06)
+------------------
+
+- Libraries from Dewesoft updated. Dewesoft changelog say this:
+
+## [v4_2_0_19] - 2021-06-04
+
+FIXED ISSUES:
+
+  - DWGetScaledSamplesCount() is zero when using big data file with asynchronous channels
+
+
 0.3.0 (2021-03-25)
 ------------------
 
