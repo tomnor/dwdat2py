@@ -1,5 +1,5 @@
 
-DWDataReader - Dynamic Link Library (v4.2.0.19)
+DWDataReader - Dynamic Link Library (v4.2.0.21)
 
 Data structure:
 
@@ -33,8 +33,9 @@ enum DWChannelProps    // used for DWGetChannelProps() calls
       DW_CH_XMLPROPS = 9,         // get channel XML properties
       DW_CH_XMLPROPS_LEN = 10,         // get length of channel XML properties
       DW_CH_CUSTOMPROPS = 11,           // get channel XML custom properties
-      DW_CH_CUSTOMPROPS_COUNT = 12      // get length of channel XML custom properties
-
+      DW_CH_CUSTOMPROPS_COUNT = 12,     // get length of channel XML custom properties
+      DW_CH_LONGNAME = 13,        // get channel long name
+      DW_CH_LONGNAME_LEN = 14           // get length of channel long name
 };
 
 enum DWChannelType     // channel type
