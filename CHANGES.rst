@@ -1,16 +1,38 @@
 Changelog
 =========
 
+0.3.2 (2022-02-13)
+------------------
+
+- Libraries from Dewesoft updated. Dewesoft changelog say this::
+
+    ## [v4_2_0_21] - 2021-11-29
+    FIXED ISSUES:
+    -Fix reading file store time in multifile
+    -Support reading channels long name
+    -DwExportHeader support for DXZ files
+    -Fix opening DXZ files
+
+    ## [v4_2_0_20] - 2021-08-02
+    FEATURES, IMPROVEMENTS:
+    - Improve Matlab example
+    - Add mising functions to Linux example
+    FIXED ISSUES:
+    - Alarms and cursor events not working
+    - Fix DWCloseDataFile function
+
+- Update of copyright years.
+- Prettify previous change note.
+
+
 0.3.1 (2021-06-06)
 ------------------
 
-- Libraries from Dewesoft updated. Dewesoft changelog say this:
+- Libraries from Dewesoft updated. Dewesoft changelog say this::
 
-## [v4_2_0_19] - 2021-06-04
-
-FIXED ISSUES:
-
-  - DWGetScaledSamplesCount() is zero when using big data file with asynchronous channels
+    ## [v4_2_0_19] - 2021-06-04
+    FIXED ISSUES:
+    - DWGetScaledSamplesCount() is zero when using big data file with asynchronous channels
 
 
 0.3.0 (2021-03-25)
