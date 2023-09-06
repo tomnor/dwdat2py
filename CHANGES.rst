@@ -28,6 +28,8 @@ Changelog
     - Fix event time calculations
 
 - Update of copyright years.
+- Update readme on downloading the libraries.
+- Update readme about using other libraries.
 
 
 0.3.2 (2022-02-13)
