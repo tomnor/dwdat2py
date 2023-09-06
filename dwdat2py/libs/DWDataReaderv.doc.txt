@@ -1,5 +1,5 @@
 
-DWDataReader - Dynamic Link Library (v4.2.0.21)
+DWDataReader - Dynamic Link Library (v4.2.0.24)
 
 Data structure:
 
@@ -320,6 +320,23 @@ Parameters:
       data –reduced values; variable should be allocated
 Return value: See above enumerator
 Description: This function returns scaled reduced data from the reduced buffer.
+
+DWGetReducedValuesBlock
+
+DWStatus DWGetReducedValuesBlock(int* ch_ids, int ch_count, int position, int count, int
+ib_level, struct DWReducedValue* data);
+Parameters:
+      ch_ids – ch. Identifier array
+      ch_count – ch. Indentifier array length
+      position – offset position; the first samlpe has position 0
+      count – a number of reduced samlpes
+      ib_level – specifies the request intermideate level of buffer. All channels in the
+provided array need to have a matching first ib level.
+      data – reduced values in the same order as the provided ch. Identifier array;
+variable should be allocated
+Return value: See above enumerator
+Description: This function returns scaled reduced data from the reduced buffer.
+
 
 DWGetHeaderEntryCount
 
