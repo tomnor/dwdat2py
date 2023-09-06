@@ -46,11 +46,10 @@ Libraries are installed in a sub-directory to dwdat2py called
 ``libs``.
 
 Libraries are retrieved from
-https://download.dewesoft.com/list/developers where one has to
-register for an account to get it. Once logged in, find a button
-"Dewesoft Data Reader Library", enabling to download a zip file
-(DWDataReader.zip) with the libs. Or skip that, since they are
-included with dwdat2py.
+https://dewesoft.com/download/developer-downloads. Find a record
+"Dewesoft Data Reader Library" and click the download button to get a
+zip file (DWDataReader.zip) with the libs. Or skip that, since they
+are included with dwdat2py.
 
 Usage
 -----
