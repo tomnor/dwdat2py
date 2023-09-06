@@ -1,6 +1,35 @@
 Changelog
 =========
 
+0.3.3 (2023-09-06)
+------------------
+
+- Libraries from Dewesoft updated. Dewesoft changelog say this::
+
+    ## [v4_2_0_24] - 2023-01-13
+    FIXED ISSUES:
+      - Importing data files with unicode filenames does not work
+      - DXD file through DWDataReader is not reading properly
+
+    ## [v4_2_0_23] - 2022-06-09
+    FEATURES, IMPROVEMENTS:
+      - LongName for system monitor channels in DWDataReader library
+      - Support async channel index in DWDataReader
+      - Update python example in DWDataReder for block reading of IB buffers
+      - Updating DWDatareader for faster reading of reduced data
+    FIXED ISSUES:
+      - Import of CNT-channels in analyze show wrong values
+      - DER plugin doesn't import all samples
+
+    ## [v4_2_0_22] - 2022-02-24
+    FEATURES, IMPROVEMENTS:
+    - Add helper functions for binary channels
+    FIXED ISSUES:
+    - Fix event time calculations
+
+- Update of copyright years.
+
+
 0.3.2 (2022-02-13)
 ------------------
 
