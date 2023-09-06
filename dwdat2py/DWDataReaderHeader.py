@@ -25,6 +25,7 @@ class DWStatus(Enum):
     DWSTAT_ERROR_CREATE_DEST_FILE = 6
     DWSTAT_ERROR_EXTRACTING_FILE = 7
     DWSTAT_ERROR_CANNOT_OPEN_EXTRACTED_FILE = 8
+    DWSTAT_ERROR_INVALID_IB_LEVEL = 9
 
 class DWChannelProps(Enum):
     DW_DATA_TYPE = 0
@@ -38,6 +39,10 @@ class DWChannelProps(Enum):
     DW_CH_XML_LEN = 8
     DW_CH_XMLPROPS = 9
     DW_CH_XMLPROPS_LEN = 10
+    DW_CH_CUSTOMPROPS = 11
+    DW_CH_CUSTOMPROPS_COUNT = 12
+    DW_CH_LONGNAME = 13
+    DW_CH_LONGNAME_LEN = 14
 
 class DWChannelType(Enum):
     DW_CH_TYPE_SYNC = 0 # sync
@@ -47,70 +52,70 @@ class DWChannelType(Enum):
 class DWFileInfo(Structure):
     _pack_ = 1
     _fields_ =\
-    [
-        ("sample_rate", c_double),
-        ("start_store_time", c_double),
-        ("duration", c_double)
-    ]
+        [
+            ("sample_rate", c_double),
+            ("start_store_time", c_double),
+            ("duration", c_double)
+        ]
 
 class DWChannel(Structure):
     _pack_ = 1
     _fields_ =\
-    [
-        ("index", c_int),
-        ("name", c_char * 100),
-        ("unit", c_char * 20),
-        ("description", c_char * 200),
-        ("color", c_uint),
-        ("array_size", c_int),
-        ("data_type", c_int)
-    ]
+        [
+            ("index", c_int),
+            ("name", c_char * 100),
+            ("unit", c_char * 20),
+            ("description", c_char * 200),
+            ("color", c_uint),
+            ("array_size", c_int),
+            ("data_type", c_int)
+        ]
 
 class DWEvent(Structure):
     _pack_ = 1
     _fields_ =\
-    [
-        ("event_type", c_int),
-        ("time_stamp", c_double),
-        ("event_text", c_char * 200)
-    ]
+        [
+            ("event_type", c_int),
+            ("time_stamp", c_double),
+            ("event_text", c_char * 200)
+        ]
 
 class DWReducedValue(Structure):
     _pack_ = 1
     _fields_ =\
-    [
-        ("time_stamp", c_double),
-        ("ave", c_double),
-        ("min", c_double),
-        ("max", c_double),
-        ("rms", c_double)
-    ]
-    
+        [
+            ("time_stamp", c_double),
+            ("ave", c_double),
+            ("min", c_double),
+            ("max", c_double),
+            ("rms", c_double)
+        ]
+
 class DWArrayInfo(Structure):
     _pack_ = 1
     _fields_ =\
-    [
-        ("index", c_int),
-        ("name", c_char * 100),
-        ("unit", c_char * 20),
-        ("size", c_int)
-    ]
+        [
+            ("index", c_int),
+            ("name", c_char * 100),
+            ("unit", c_char * 20),
+            ("size", c_int)
+        ]
 
 class DWCANPortData(Structure):
     _pack_ = 1
     _fields_ =\
-    [
-        ("arb_id", c_ulong),
-        ("data", c_char * 8)
-    ]
+        [
+            ("arb_id", c_ulong),
+            ("data", c_char * 8)
+        ]
 
 class DWComplex(Structure):
     _pack_ = 1
     _fields_ =\
-    [
-        ("re", c_double),
-        ("im", c_double)
-    ]
+        [
+            ("re", c_double),
+            ("im", c_double)
+        ]
 
 class DWEventType(Enum):
     etStart = 1
