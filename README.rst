@@ -145,6 +145,33 @@ Access to the wrappers module is also provided as a context manager:
 
         """
 
+Using libs not shipped with dwdat2py
+....................................
+
+The path to the libs can be specified by setting a variable
+``dwdat2py.DEWELIBDIR`` to the directory containing the libs:
+
+.. code:: python
+
+    >>> import dwdat2py
+    >>> dwdat2py.DEWELIBDIR = '~/latestdwlibs'
+
+for example. This setting must be done before loading a datafile. The
+structure of the directory should look like this:
+
+.. code:: shell
+
+    $ tree latestdwlibs
+    latestdwlibs
+    |-- DWDataReaderLib.dll
+    |-- DWDataReaderLib.so
+    |-- DWDataReaderLib64.dll
+    `-- DWDataReaderLib64.so
+
+Meaning, the shared libraries should sit directly inside the
+``DEWELIBDIR`` directory. Only one of those files is really necessary
+depending on the OS and platform.
+
 Contribute
 ----------
 
